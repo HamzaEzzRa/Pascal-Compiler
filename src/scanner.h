@@ -21,6 +21,8 @@ extern const char* const keywords[];
 
 extern const char* const specials[];
 
+extern const char* const token_type_map[];
+
 extern int line_count, char_count;
 
 typedef struct {

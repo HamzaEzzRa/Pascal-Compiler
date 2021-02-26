@@ -130,7 +130,7 @@ int open_target_file(const char *path) {
 }
 
 void next_token() {
-    if (current_token != NULL) { // Freeing the memory allocated to the previous token (No need to go back to previous tokens ?)
+    if (current_token != NULL) { // Freeing the memory allocated to the previous token
         free(current_token->token);
         free(current_token);
         current_token = NULL;

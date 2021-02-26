@@ -75,13 +75,14 @@ uint32_t hash(const void *key, int len, uint32_t seed) {
     return h % HASH_SIZE;
 }
 
-Symbol* make_symbol(char *name, TokenType dt, TokenType tt, int line, int dim, ParamType *param_list, SymbolValue *value_list) {
+Symbol* make_symbol(const char *name, TokenType dt, TokenType tt, int line, int col, int dim, ParamType *param_list, SymbolValue *value_list) {
     Symbol *new_symbol = malloc(sizeof(Symbol));
     new_symbol->name = malloc(strlen(name)+1);
     strcpy(new_symbol->name, name);
     new_symbol->declaration_type = dt;
     new_symbol->token_type = tt;
     new_symbol->line = line;
+    new_symbol->col = col;
     new_symbol->dimension = dim;
     new_symbol->param_list = param_list;
     new_symbol->values = value_list;
@@ -97,7 +98,7 @@ SymbolValue* make_symbol_value(char *token_value, TokenType target_type) {
     else if (target_type == CVAL_TOKEN)
         new_value->c = *token_value;
     else if (target_type == SVAL_TOKEN) {
-        new_value->str = malloc(strlen(token_value)+1);
+        new_value->str = malloc(strlen(token_value) + 1);
         strcpy(new_value->str, token_value);
     }
     return new_value;
@@ -121,9 +122,9 @@ void init_main_table() { // Don't forget to call this on start !!
         main_table = make_table(NULL);
         SymbolValue *value_ptr = malloc(sizeof(SymbolValue));
         value_ptr->i = 1;
-        symbol_insert(main_table, make_symbol("true", VAR_TOKEN, INT_TOKEN, 0, 1, NULL, value_ptr));
+        symbol_insert(main_table, make_symbol("true", VAR_TOKEN, INT_TOKEN, 0, 0, 1, NULL, value_ptr));
         value_ptr->i = 0;
-        symbol_insert(main_table, make_symbol("false", VAR_TOKEN, INT_TOKEN, 0, 1, NULL, value_ptr));
+        symbol_insert(main_table, make_symbol("false", VAR_TOKEN, INT_TOKEN, 0, 0, 1, NULL, value_ptr));
     }
 }
 
@@ -145,7 +146,7 @@ Symbol* symbol_lookup(SymbolTable *table_ptr, char *name) {
     return tmp; // Returns NULL if symbol's not found on given table
 }
 
-Symbol* symbol_deep_lookup(char *name) { // Looks up in the current and the main table before returning the result
+Symbol* symbol_deep_lookup(char *name) { // Looks up in the current and the main table and returns the result
     Symbol *tmp = symbol_lookup(current_table, name);
     if (tmp == NULL && current_table->nesting_level != main_table->nesting_level)
         tmp = symbol_lookup(main_table, name);

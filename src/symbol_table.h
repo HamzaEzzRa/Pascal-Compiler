@@ -17,6 +17,7 @@ typedef struct _SymbolValue {
 typedef struct _ParamType {
     struct _ParamType *next;
     struct _Symbol *param_symbol;
+    int ref_pass; // Case of a parameter passed by reference
 } ParamType;
 
 typedef struct _Symbol {
@@ -24,7 +25,7 @@ typedef struct _Symbol {
 
     TokenType declaration_type;
     TokenType token_type;
-    int line;
+    int line, col;
     int dimension; // string length, number length, array size, function/procedure params count ...
     char *name;
 
@@ -44,7 +45,7 @@ SymbolTable *main_table;
 SymbolTable *current_table;
 
 TokenType declaration_value_map(TokenType);
-Symbol* make_symbol(char *name, TokenType dt, TokenType tt, int line, int dim, ParamType *param_list, SymbolValue *value_list);
+Symbol* make_symbol(const char *name, TokenType dt, TokenType tt, int line, int col, int dim, ParamType *param_list, SymbolValue *value_list);
 SymbolValue* make_symbol_value(char *, TokenType);
 SymbolTable* make_table(SymbolTable *);
 void init_main_table();

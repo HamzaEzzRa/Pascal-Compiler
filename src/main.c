@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "scanner.h"
 #include "parser.h"
+#include "tac.h"
+#include "code_generator.h"
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -12,18 +15,20 @@ int main(int argc, char **argv) {
     char *file_path = NULL;
     for (int i = 1; i < argc; i++) {
         if (argv[i][0] != '-') {
-            if (file_path == NULL)
+            if (file_path == NULL) {
                 file_path = argv[i];
-            else
+            }
+            else {
                 printf("Warning: only one source file compilation is supported, compiling source file at first given path \"%s\"\n",
                     file_path);
+            }
         }
         else if (argv[i][1] != '\0') {
-            if (argv[i][1] == 't') { // Add an option '-t' for listing tokens and token types (To-Do)
+            if (argv[i][1] == 't' && argv[i][2] == '\0') { // Add an option '-t' for listing tokens and token types (To-Do)
                 
             }
-            else if (argv[i][1] == 's' && argv[i][2] == 't') { // Add an option '-st' for listing symbols and their attributes (To-Do)
-
+            else if (argv[i][1] == 's' && argv[i][2] == 't' && argv[i][3] == '\0') { // Add an option '-st' for listing symbols and their attributes (To-Do)
+                
             }
             else {
                 printf("Error: illegal parameter: %s\n", argv[i]);
@@ -39,7 +44,10 @@ int main(int argc, char **argv) {
     // scan_file() -> tests the lexical analyser only
     // parse_file() -> tests the lexical, syntax and semantic analysers
 
-    parse_file(file_path);
-    
-    return EXIT_SUCCESS;
+    if (!parse_file(file_path)) {
+        return EXIT_FAILURE;
+    }
+    generate_code(program_tac);
+
+    return EXIT_FAILURE;
 }
